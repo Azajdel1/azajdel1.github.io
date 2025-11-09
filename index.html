@@ -82,71 +82,22 @@
 
     <!-- React 18 via ESM CDN (no build tools needed) -->
     <script type="module">
-      // --- React + Firestore (shared counter across users) ---
-      import React, { useEffect, useMemo, useState, useRef } from 'https://esm.sh/react@18';
+      import React, { useEffect, useMemo, useState } from 'https://esm.sh/react@18';
       import { createRoot } from 'https://esm.sh/react-dom@18/client';
 
-      // Firebase SDKs (modular)
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
-      import { getFirestore, doc, onSnapshot, runTransaction, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+      const STORAGE_KEY = 'isaac-dirty-diapers-count-v1';
 
-      // 1) Paste your Firebase web app config below (from Firebase Console > Project settings > Your apps > Web app)
-      const firebaseConfig = {
-        apiKey: "AIzaSyA9SvuE8QVVG2XUs39LKT-ZtiUxE_JoSnc",
-        authDomain: "isaacdiaper.firebaseapp.com",
-        projectId: "isaacdiaper",
-        storageBucket: "isaacdiaper.firebasestorage.app",
-        messagingSenderId: "74206872811",
-        appId: "1:74206872811:web:2c1d6f129086795e4e2aae",
-        measurementId: "G-XRLGL1D32H"
-      };
-
-      // Init Firebase + Firestore
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-
-      // Document to hold the shared counter (collection: counters / doc: isaac)
-      const COUNTER_PATH = { col: 'counters', id: 'isaac' };
-
-      function useSharedCounter(path) {
-        const [count, setCount] = useState(null); // null until loaded
-        const unsubRef = useRef(null);
-
+      function useLocalCount(key, initial) {
+        const [value, setValue] = useState(() => {
+          try {
+            const raw = localStorage.getItem(key);
+            return raw !== null ? JSON.parse(raw) : initial;
+          } catch (_) { return initial; }
+        });
         useEffect(() => {
-          const ref = doc(db, path.col, path.id);
-          (async () => {
-            // Create the doc if it doesn't exist
-            const snap = await getDoc(ref);
-            if (!snap.exists()) {
-              await setDoc(ref, { count: 0, updatedAt: Date.now() });
-            }
-          })();
-          // Real-time subscription
-          unsubRef.current = onSnapshot(ref, (snap) => {
-            const data = snap.data();
-            setCount(typeof data?.count === 'number' ? data.count : 0);
-          });
-          return () => unsubRef.current && unsubRef.current();
-        }, [path.col, path.id]);
-
-        const bump = async (delta) => {
-          const ref = doc(db, path.col, path.id);
-          await runTransaction(db, async (tx) => {
-            const snap = await tx.get(ref);
-            const current = (snap.data()?.count ?? 0) + 0;
-            const next = Math.max(0, current + delta);
-            tx.set(ref, { count: next, updatedAt: Date.now() }, { merge: true });
-          });
-        };
-
-        const reset = async () => {
-          const ref = doc(db, path.col, path.id);
-          await runTransaction(db, async (tx) => {
-            tx.set(ref, { count: 0, updatedAt: Date.now() }, { merge: true });
-          });
-        };
-
-        return { count, bump, reset };
+          try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {}
+        }, [key, value]);
+        return [value, setValue];
       }
 
       function formatDate(date) {
@@ -154,34 +105,32 @@
       }
 
       function Dashboard() {
-        const { count, bump, reset } = useSharedCounter(COUNTER_PATH);
+        const [count, setCount] = useLocalCount(STORAGE_KEY, 0);
         const today = useMemo(() => formatDate(new Date()), []);
-
-        const loading = count === null;
-        const increment = () => bump(1);
-        const decrement = () => bump(-1);
-        const doReset = () => { if (confirm('Reset the counter to 0 for everyone?')) reset(); };
+        const increment = () => setCount(c => c + 1);
+        const decrement = () => setCount(c => Math.max(0, c - 1));
+        const reset = () => { if (confirm('Reset the counter to 0?')) setCount(0); };
 
         return (
           React.createElement(React.Fragment, null,
             React.createElement('header', null,
-              React.createElement('div', { className: 'muted' }, "Isaac's Dashboard"),
+              React.createElement('div', { className: 'muted' }, 'Isaac\'s Dashboard'),
               React.createElement('h1', null, 'Dirty Diapers')
             ),
             React.createElement('section', { className: 'grid' },
               React.createElement('div', { className: 'stat' },
-                React.createElement('div', { className: 'muted' }, 'Total count (shared)'),
-                React.createElement('div', { className: 'count', 'aria-live': 'polite' }, loading ? '…' : String(count))
+                React.createElement('div', { className: 'muted' }, 'Total count'),
+                React.createElement('div', { className: 'count', 'aria-live': 'polite' }, String(count))
               ),
               React.createElement('div', { className: 'buttons' },
-                React.createElement('button', { className: 'primary', onClick: increment, disabled: loading }, 'Add one'),
-                React.createElement('button', { className: 'ghost', onClick: decrement, disabled: loading, title: 'Decrease by one' }, '-1'),
-                React.createElement('button', { className: 'ghost', onClick: doReset, disabled: loading, title: 'Reset to zero (shared)' }, 'Reset')
+                React.createElement('button', { className: 'primary', onClick: increment }, 'Add one'),
+                React.createElement('button', { className: 'ghost', onClick: decrement, title: 'Decrease by one' }, '-1'),
+                React.createElement('button', { className: 'ghost', onClick: reset, title: 'Reset to zero' }, 'Reset')
               )
             ),
             React.createElement('div', { className: 'footer' },
               React.createElement('div', { className: 'today' }, today),
-              React.createElement('div', { className: 'badge' }, 'Cloud: Firestore')
+              React.createElement('div', { className: 'badge' }, 'Local Storage')
             )
           )
         );
