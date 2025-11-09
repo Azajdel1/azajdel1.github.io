@@ -1,14 +1,143 @@
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PurpleAir Widget</title>
-</head>
-<body>
-  <div id="PurpleAirWidget_199435_module_US_EPA_AQI_conversion_C0_average_10_layer_US_EPA_AQI">
-    Loading PurpleAir Widget...
-  </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Isaac — Diaper Count</title>
+    <meta name="description" content="Tiny React dashboard to track Isaac's dirty diapers." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🧷%3C/text%3E%3C/svg%3E" />
+    <style>
+      :root {
+        --bg: #0b1020;
+        --card: #131a2a;
+        --ink: #e6ecff;
+        --muted: #93a1c6;
+        --accent: #7c9aff;
+        --accent-2: #9de1c2;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Cantarell, Noto Sans, Ubuntu, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+        background: radial-gradient(1200px 700px at 80% -10%, #16213a 0%, var(--bg) 60%);
+        color: var(--ink);
+        display: grid; place-items: center;
+      }
+      .wrap { width: min(640px, 92vw); }
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        padding: 24px 24px 16px;
+      }
+      h1 { font-size: clamp(28px, 5vw, 40px); margin: 4px 0 8px; letter-spacing: -0.02em; }
+      .muted { color: var(--muted); font-size: 14px; }
+      .grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end; }
+      .stat {
+        display: grid; gap: 6px; align-content: start;
+      }
+      .count {
+        font-variant-numeric: tabular-nums;
+        font-weight: 800; letter-spacing: -0.02em;
+        font-size: clamp(56px, 10vw, 90px);
+        line-height: 0.9;
+        background: linear-gradient(180deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+      button {
+        appearance: none; border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.04);
+        color: var(--ink);
+        padding: 10px 14px; border-radius: 999px; cursor: pointer; font-weight: 600;
+        transition: transform .06s ease, background .2s ease, border-color .2s ease;
+      }
+      button:hover { background: rgba(255,255,255,0.08); }
+      button:active { transform: translateY(1px) scale(0.99); }
+      .primary { border-color: rgba(124,154,255,0.6); background: linear-gradient(180deg, rgba(124,154,255,0.22), rgba(124,154,255,0.1)); }
+      .ghost { opacity: 0.85; }
+      .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+      .today { font-size: 13px; color: var(--muted); }
+      .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px dashed rgba(255,255,255,0.18); opacity: .8; }
+      a { color: var(--accent-2); text-decoration: none; }
+      .tiny { font-size: 12px; opacity: .8; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div id="root"></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <header>
+          <div class="muted">Air Quality</div>
+          <h1 style="margin-top:6px">PurpleAir — US EPA AQI</h1>
+        </header>
+        <div id="PurpleAirWidget_199435_module_US_EPA_AQI_conversion_C0_average_10_layer_US_EPA_AQI">Loading PurpleAir Widget...</div>
+      </div>
+      <script src="https://www.purpleair.com/pa.widget.js?key=B7RY7WKWGEB4EC9Y&module=US_EPA_AQI&conversion=C0&average=10&layer=US_EPA_AQI&container=PurpleAirWidget_199435_module_US_EPA_AQI_conversion_C0_average_10_layer_US_EPA_AQI"></script>
+      <p class="tiny" style="margin-top:10px; text-align:center">Local-only; persists in your browser. Clearable any time.</p>
+    </div>
 
-  <script src="https://www.purpleair.com/pa.widget.js?key=B7RY7WKWGEB4EC9Y&module=US_EPA_AQI&conversion=C0&average=10&layer=US_EPA_AQI&container=PurpleAirWidget_199435_module_US_EPA_AQI_conversion_C0_average_10_layer_US_EPA_AQI"></script>
-</body>
+    <!-- React 18 via ESM CDN (no build tools needed) -->
+    <script type="module">
+      import React, { useEffect, useMemo, useState } from 'https://esm.sh/react@18';
+      import { createRoot } from 'https://esm.sh/react-dom@18/client';
+
+      const STORAGE_KEY = 'isaac-dirty-diapers-count-v1';
+
+      function useLocalCount(key, initial) {
+        const [value, setValue] = useState(() => {
+          try {
+            const raw = localStorage.getItem(key);
+            return raw !== null ? JSON.parse(raw) : initial;
+          } catch (_) { return initial; }
+        });
+        useEffect(() => {
+          try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {}
+        }, [key, value]);
+        return [value, setValue];
+      }
+
+      function formatDate(date) {
+        return new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(date);
+      }
+
+      function Dashboard() {
+        const [count, setCount] = useLocalCount(STORAGE_KEY, 0);
+        const today = useMemo(() => formatDate(new Date()), []);
+        const increment = () => setCount(c => c + 1);
+        const decrement = () => setCount(c => Math.max(0, c - 1));
+        const reset = () => { if (confirm('Reset the counter to 0?')) setCount(0); };
+
+        return (
+          React.createElement(React.Fragment, null,
+            React.createElement('header', null,
+              React.createElement('div', { className: 'muted' }, 'Isaac\'s Dashboard'),
+              React.createElement('h1', null, 'Dirty Diapers')
+            ),
+            React.createElement('section', { className: 'grid' },
+              React.createElement('div', { className: 'stat' },
+                React.createElement('div', { className: 'muted' }, 'Total count'),
+                React.createElement('div', { className: 'count', 'aria-live': 'polite' }, String(count))
+              ),
+              React.createElement('div', { className: 'buttons' },
+                React.createElement('button', { className: 'primary', onClick: increment }, 'Add one'),
+                React.createElement('button', { className: 'ghost', onClick: decrement, title: 'Decrease by one' }, '-1'),
+                React.createElement('button', { className: 'ghost', onClick: reset, title: 'Reset to zero' }, 'Reset')
+              )
+            ),
+            React.createElement('div', { className: 'footer' },
+              React.createElement('div', { className: 'today' }, today),
+              React.createElement('div', { className: 'badge' }, 'Local Storage')
+            )
+          )
+        );
+      }
+
+      const root = createRoot(document.getElementById('root'));
+      root.render(React.createElement(Dashboard));
+    </script>
+  </body>
 </html>
