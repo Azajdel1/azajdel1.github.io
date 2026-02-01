@@ -66,9 +66,6 @@
   </head>
   <body>
     <div class="wrap">
-      <div class="card">
-        <div id="root"></div>
-      </div>
       <div class="card" style="margin-top:14px">
         <header>
           <div class="muted">Air Quality</div>
@@ -79,65 +76,5 @@
       <script src="https://www.purpleair.com/pa.widget.js?key=B7RY7WKWGEB4EC9Y&module=US_EPA_AQI&conversion=C0&average=10&layer=US_EPA_AQI&container=PurpleAirWidget_199435_module_US_EPA_AQI_conversion_C0_average_10_layer_US_EPA_AQI"></script>
       <p class="tiny" style="margin-top:10px; text-align:center">Local-only; persists in your browser. Clearable any time.</p>
     </div>
-
-    <!-- React 18 via ESM CDN (no build tools needed) -->
-    <script type="module">
-      import React, { useEffect, useMemo, useState } from 'https://esm.sh/react@18';
-      import { createRoot } from 'https://esm.sh/react-dom@18/client';
-
-      const STORAGE_KEY = 'isaac-dirty-diapers-count-v1';
-
-      function useLocalCount(key, initial) {
-        const [value, setValue] = useState(() => {
-          try {
-            const raw = localStorage.getItem(key);
-            return raw !== null ? JSON.parse(raw) : initial;
-          } catch (_) { return initial; }
-        });
-        useEffect(() => {
-          try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {}
-        }, [key, value]);
-        return [value, setValue];
-      }
-
-      function formatDate(date) {
-        return new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(date);
-      }
-
-      function Dashboard() {
-        const [count, setCount] = useLocalCount(STORAGE_KEY, 0);
-        const today = useMemo(() => formatDate(new Date()), []);
-        const increment = () => setCount(c => c + 1);
-        const decrement = () => setCount(c => Math.max(0, c - 1));
-        const reset = () => { if (confirm('Reset the counter to 0?')) setCount(0); };
-
-        return (
-          React.createElement(React.Fragment, null,
-            React.createElement('header', null,
-              React.createElement('div', { className: 'muted' }, 'Isaac\'s Dashboard'),
-              React.createElement('h1', null, 'Dirty Diapers')
-            ),
-            React.createElement('section', { className: 'grid' },
-              React.createElement('div', { className: 'stat' },
-                React.createElement('div', { className: 'muted' }, 'Total count'),
-                React.createElement('div', { className: 'count', 'aria-live': 'polite' }, String(count))
-              ),
-              React.createElement('div', { className: 'buttons' },
-                React.createElement('button', { className: 'primary', onClick: increment }, 'Add one'),
-                React.createElement('button', { className: 'ghost', onClick: decrement, title: 'Decrease by one' }, '-1'),
-                React.createElement('button', { className: 'ghost', onClick: reset, title: 'Reset to zero' }, 'Reset')
-              )
-            ),
-            React.createElement('div', { className: 'footer' },
-              React.createElement('div', { className: 'today' }, today),
-              React.createElement('div', { className: 'badge' }, 'Local Storage')
-            )
-          )
-        );
-      }
-
-      const root = createRoot(document.getElementById('root'));
-      root.render(React.createElement(Dashboard));
-    </script>
   </body>
 </html>
