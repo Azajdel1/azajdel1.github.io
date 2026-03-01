@@ -25,7 +25,8 @@
 
   html {
     font-size: 16px;
-    overflow-x: hidden;
+    overflow-x: clip; /* clip is the only value iOS Safari actually respects with fixed children */
+    max-width: 100%;
   }
 
   body {
@@ -34,7 +35,9 @@
     font-family: 'Cormorant Garamond', serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
   }
 
   /* Grain */
@@ -51,7 +54,7 @@
   .container {
     position: relative;
     z-index: 1;
-    max-width: 580px;
+    width: min(580px, 100%);
     margin: 0 auto;
     padding: 0 1.5rem 4rem;
   }
@@ -171,6 +174,12 @@
         <div class="cocktail-name">Smoke Break</div>
         <p class="cocktail-desc">Peated scotch, coffee, and bitter orange — a dark old-fashioned that lingers.</p>
         <div class="cocktail-spirits">Monkey Shoulder · Laphroaig 10 · State Line</div>
+      </li>
+
+      <li class="cocktail">
+        <div class="cocktail-name">Far North</div>
+        <p class="cocktail-desc">A single-varietal rye Manhattan — cold at the root, bitter-sweet at the finish.</p>
+        <div class="cocktail-spirits">Oklon Rye · Sweet Vermouth · Angostura</div>
       </li>
 
       <!-- Add more cocktails here:
