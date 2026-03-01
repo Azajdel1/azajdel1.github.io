@@ -25,8 +25,9 @@
 
   html {
     font-size: 16px;
-    overflow-x: clip; /* clip is the only value iOS Safari actually respects with fixed children */
-    max-width: 100%;
+    /* touch-action prevents horizontal swipe-scroll on iOS regardless of overflow settings */
+    touch-action: pan-y pinch-zoom;
+    overflow-x: hidden;
   }
 
   body {
@@ -35,14 +36,11 @@
     font-family: 'Cormorant Garamond', serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    width: 100%;
-    max-width: 100%;
-    position: relative;
+    overflow-x: hidden;
   }
 
-  /* Grain */
-  body::before {
-    content: '';
+  /* Grain — real element, not body::before, avoids iOS fixed-child scroll quirk */
+  .grain {
     position: fixed;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
@@ -59,7 +57,7 @@
     padding: 0 1.5rem 4rem;
   }
 
-  /* ── Header: tight so drinks land near top of screen ── */
+  /* ── Header ── */
   header {
     text-align: center;
     padding: clamp(1.75rem, 6vw, 3rem) 0 1.75rem;
@@ -75,12 +73,11 @@
     color: var(--off-white);
     line-height: 1.15;
     overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   /* ── Cocktail list ── */
-  .cocktail-list {
-    list-style: none;
-  }
+  .cocktail-list { list-style: none; }
 
   .cocktail {
     padding: clamp(1.1rem, 3.5vw, 1.6rem) 0;
@@ -113,6 +110,7 @@
     color: var(--gold);
     margin-bottom: 0.5rem;
     overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .cocktail-desc {
@@ -131,9 +129,10 @@
     text-transform: uppercase;
     color: var(--faint);
     overflow-wrap: break-word;
+    word-break: break-all; /* forces wrap mid-string if needed */
   }
 
-  /* ── Tagline at bottom ── */
+  /* ── Tagline ── */
   .tagline {
     margin-top: clamp(2rem, 6vw, 3rem);
     padding-top: 1.5rem;
@@ -141,8 +140,6 @@
     text-align: center;
     font-style: italic;
     font-size: clamp(0.95rem, 2.8vw, 1.1rem);
-    color: var(--rule);
-    /* intentionally very dim — a quiet sign-off */
     color: #3a3430;
     line-height: 1.5;
   }
@@ -161,6 +158,7 @@
 </style>
 </head>
 <body>
+<div class="grain" aria-hidden="true"></div>
 <div class="container">
 
   <header>
@@ -177,8 +175,8 @@
       </li>
 
       <li class="cocktail">
-        <div class="cocktail-name">Far North</div>
-        <p class="cocktail-desc">A single-varietal rye Manhattan — cold at the root, bitter-sweet at the finish.</p>
+        <div class="cocktail-name">Manhattan</div>
+        <p class="cocktail-desc">Heritage Minnesota rye, sweet vermouth, Angostura. Stirred until cold.</p>
         <div class="cocktail-spirits">Oklon Rye · Sweet Vermouth · Angostura</div>
       </li>
 
