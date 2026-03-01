@@ -3,21 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Infinite Regress — cocktail menu.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Infinite Regress</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --black:     #080808;
     --off-white: #f0ebe0;
     --gold:      #c8a84b;
-    --muted:     #f0ebe0;   /* descriptions — same as off-white, italic does the differentiating */
-    --faint:     #d0c5b4;   /* spirits line */
+    --muted:     #f0ebe0;
+    --faint:     #d0c5b4;
     --rule:      #2a2520;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { font-size: 16px; }
+  html {
+    font-size: 16px;
+    overflow-x: hidden;
+  }
 
   body {
     background: var(--black);
@@ -25,8 +34,10 @@
     font-family: 'Cormorant Garamond', serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
+  /* Grain */
   body::before {
     content: '';
     position: fixed;
@@ -40,101 +51,109 @@
   .container {
     position: relative;
     z-index: 1;
-    max-width: 600px;
+    max-width: 580px;
     margin: 0 auto;
-    padding: 0 1.5rem 5rem;
+    padding: 0 1.5rem 4rem;
   }
 
-  /* ── Header ── */
+  /* ── Header: tight so drinks land near top of screen ── */
   header {
     text-align: center;
-    padding: clamp(2.5rem, 8vw, 4rem) 0 2.5rem;
+    padding: clamp(1.75rem, 6vw, 3rem) 0 1.75rem;
     border-bottom: 1px solid var(--rule);
-    margin-bottom: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
   }
 
   h1 {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(1.9rem, 9vw, 3rem);
+    font-size: clamp(1.6rem, 7vw, 3rem);
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     color: var(--off-white);
-    margin-bottom: 0.75rem;
-    line-height: 1.2;
-  }
-
-  .page-sub {
-    font-size: clamp(1.05rem, 3.2vw, 1.2rem);
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.5;
+    line-height: 1.15;
+    overflow-wrap: break-word;
   }
 
   /* ── Cocktail list ── */
   .cocktail-list {
     list-style: none;
-    display: flex;
-    flex-direction: column;
   }
 
   .cocktail {
-    padding: 1.6rem 0;
+    padding: clamp(1.1rem, 3.5vw, 1.6rem) 0;
     border-bottom: 1px solid var(--rule);
     opacity: 0;
-    animation: fadeUp 0.7s ease forwards;
+    animation: fadeUp 0.6s ease forwards;
   }
 
   .cocktail:last-child { border-bottom: none; }
 
-  .cocktail:nth-child(1)  { animation-delay: 0.10s; }
-  .cocktail:nth-child(2)  { animation-delay: 0.20s; }
-  .cocktail:nth-child(3)  { animation-delay: 0.30s; }
-  .cocktail:nth-child(4)  { animation-delay: 0.40s; }
-  .cocktail:nth-child(5)  { animation-delay: 0.50s; }
-  .cocktail:nth-child(6)  { animation-delay: 0.60s; }
-  .cocktail:nth-child(7)  { animation-delay: 0.70s; }
-  .cocktail:nth-child(8)  { animation-delay: 0.80s; }
-  .cocktail:nth-child(9)  { animation-delay: 0.90s; }
-  .cocktail:nth-child(10) { animation-delay: 1.00s; }
-  .cocktail:nth-child(11) { animation-delay: 1.10s; }
-  .cocktail:nth-child(12) { animation-delay: 1.20s; }
+  .cocktail:nth-child(1)  { animation-delay: 0.05s; }
+  .cocktail:nth-child(2)  { animation-delay: 0.15s; }
+  .cocktail:nth-child(3)  { animation-delay: 0.25s; }
+  .cocktail:nth-child(4)  { animation-delay: 0.35s; }
+  .cocktail:nth-child(5)  { animation-delay: 0.45s; }
+  .cocktail:nth-child(6)  { animation-delay: 0.55s; }
+  .cocktail:nth-child(7)  { animation-delay: 0.65s; }
+  .cocktail:nth-child(8)  { animation-delay: 0.75s; }
+  .cocktail:nth-child(9)  { animation-delay: 0.85s; }
+  .cocktail:nth-child(10) { animation-delay: 0.95s; }
+  .cocktail:nth-child(11) { animation-delay: 1.05s; }
+  .cocktail:nth-child(12) { animation-delay: 1.15s; }
 
   .cocktail-name {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    font-size: clamp(1rem, 3.5vw, 1.4rem);
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.5rem;
+    overflow-wrap: break-word;
   }
 
   .cocktail-desc {
-    font-size: clamp(1.25rem, 3.8vw, 1.5rem);
+    font-size: clamp(1.15rem, 3.5vw, 1.45rem);
     font-style: italic;
-    font-weight: 400;
     color: var(--muted);
-    line-height: 1.55;
-    margin-bottom: 0.75rem;
+    line-height: 1.5;
+    margin-bottom: 0.65rem;
+    overflow-wrap: break-word;
   }
 
   .cocktail-spirits {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(0.65rem, 2vw, 0.8rem);
-    letter-spacing: 0.18em;
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--faint);
+    overflow-wrap: break-word;
   }
 
+  /* ── Tagline at bottom ── */
+  .tagline {
+    margin-top: clamp(2rem, 6vw, 3rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    font-style: italic;
+    font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+    color: var(--rule);
+    /* intentionally very dim — a quiet sign-off */
+    color: #3a3430;
+    line-height: 1.5;
+  }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 480px) {
-    .container { padding: 0 1.25rem 4rem; }
-    .cocktail { padding: 1.35rem 0; }
+  @media (max-width: 400px) {
+    .container { padding: 0 1.1rem 3rem; }
+    h1 { letter-spacing: 0.04em; }
+    .cocktail-name { letter-spacing: 0.05em; }
+    .cocktail-spirits { letter-spacing: 0.05em; }
   }
 </style>
 </head>
@@ -143,7 +162,6 @@
 
   <header>
     <h1>INFINITE REGRESS</h1>
-    <p class="page-sub">Every drink a beginning; every sip a long way back.</p>
   </header>
 
   <main>
@@ -165,6 +183,8 @@
 
     </ul>
   </main>
+
+  <p class="tagline">Every drink a beginning; every sip a long way back.</p>
 
 </div>
 </body>
