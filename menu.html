@@ -7,13 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black:    #080808;
+    --black:     #080808;
     --off-white: #f0ebe0;
-    --gold:     #c8a84b;
-    --muted:    #9a9080;   /* descriptions — readable against black */
-    --faint:    #6a6258;   /* spirits / labels — ornamental but visible */
-    --rule:     #2a2520;
-    --card-bg:  #0f0d0a;
+    --gold:      #c8a84b;
+    --muted:     #b8ad9a;   /* descriptions */
+    --faint:     #857870;   /* spirits line */
+    --rule:      #2a2520;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,7 +55,7 @@
 
   .bar-eyebrow {
     font-family: 'Syncopate', sans-serif;
-    font-size: 0.55rem;
+    font-size: clamp(0.55rem, 1.5vw, 0.65rem);
     letter-spacing: 0.45em;
     text-transform: uppercase;
     color: var(--gold);
@@ -65,7 +64,7 @@
 
   h1 {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(1.1rem, 5vw, 1.75rem);
+    font-size: clamp(1.4rem, 6vw, 2.1rem);
     font-weight: 700;
     letter-spacing: 0.12em;
     color: var(--off-white);
@@ -74,20 +73,10 @@
   }
 
   .page-sub {
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    font-size: clamp(1rem, 3vw, 1.15rem);
     font-style: italic;
     color: var(--muted);
     line-height: 1.5;
-  }
-
-  /* ── Section label ── */
-  .section-label {
-    font-family: 'Syncopate', sans-serif;
-    font-size: 0.5rem;
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin-bottom: 0.25rem;
   }
 
   /* ── Cocktail list ── */
@@ -98,7 +87,7 @@
   }
 
   .cocktail {
-    padding: 1.5rem 0;
+    padding: 1.6rem 0;
     border-bottom: 1px solid var(--rule);
     opacity: 0;
     animation: fadeUp 0.7s ease forwards;
@@ -121,7 +110,7 @@
 
   .cocktail-name {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -130,17 +119,17 @@
   }
 
   .cocktail-desc {
-    font-size: clamp(1.05rem, 2.8vw, 1.2rem);
+    font-size: clamp(1.15rem, 3.2vw, 1.35rem);
     font-style: italic;
     font-weight: 400;
     color: var(--muted);
     line-height: 1.55;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.7rem;
   }
 
   .cocktail-spirits {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(0.5rem, 1.5vw, 0.55rem);
+    font-size: clamp(0.55rem, 1.8vw, 0.65rem);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--faint);
@@ -156,7 +145,7 @@
 
   footer p {
     font-family: 'Syncopate', sans-serif;
-    font-size: 0.5rem;
+    font-size: clamp(0.5rem, 1.5vw, 0.6rem);
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--faint);
@@ -175,15 +164,9 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Mobile ── */
   @media (max-width: 480px) {
     .container { padding: 0 1.25rem 4rem; }
-
-    .bar-eyebrow { font-size: 0.5rem; letter-spacing: 0.3em; }
-
-    .cocktail { padding: 1.25rem 0; }
-
-    .cocktail-desc { font-size: 1rem; }
+    .cocktail { padding: 1.35rem 0; }
   }
 </style>
 </head>
@@ -197,7 +180,6 @@
   </header>
 
   <main>
-    <div class="section-label">— Cocktails —</div>
     <ul class="cocktail-list">
 
       <li class="cocktail">
