@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinite Regress — Recipes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --off-white: #f0ebe0;
+    --cream: #e8dfc8;
+    --gold: #c8a84b;
+    --dim: #6a6258;
+    --rule: #2a2520;
+    --card-bg: #0f0d0a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  header {
+    text-align: center;
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 4rem;
+  }
+
+  .bar-eyebrow {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-family: 'Syncopate', sans-serif;
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--off-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .page-sub {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--dim);
+  }
+
+  /* Recipe grid */
+  .recipes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 2px;
+  }
+
+  .recipe-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    padding: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .recipe-card:nth-child(1) { animation-delay: 0.1s; }
+  .recipe-card:nth-child(2) { animation-delay: 0.2s; }
+  .recipe-card:nth-child(3) { animation-delay: 0.3s; }
+  .recipe-card:nth-child(4) { animation-delay: 0.4s; }
+  .recipe-card:nth-child(5) { animation-delay: 0.5s; }
+  .recipe-card:nth-child(6) { animation-delay: 0.6s; }
+
+  .recipe-name {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .recipe-desc {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--dim);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .ingredients-label,
+  .method-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.45rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #3a3530;
+    margin-bottom: 0.75rem;
+  }
+
+  .ingredients {
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .ingredients li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed #1a1612;
+    font-size: 0.9rem;
+    gap: 1rem;
+  }
+
+  .ingredients li:last-child { border-bottom: none; }
+
+  .ing-name { color: #b0a888; }
+  .ing-sub {
+    display: block;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: #3a3530;
+  }
+  .ing-amount {
+    color: var(--gold);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .method-text {
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: #7a7060;
+  }
+
+  .method-text strong { color: #a09070; }
+
+  .glassware {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .glass-tag {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.45rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #3a3530;
+  }
+
+  .glass-tag span { color: #6a6258; margin-left: 0.3rem; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .recipes { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="bar-eyebrow">Internal Reference</div>
+    <h1>INFINITE REGRESS — RECIPES</h1>
+    <div class="page-sub">Full build sheets · Not linked from menu</div>
+  </header>
+
+  <div class="recipes">
+
+    <!-- SMOKE BREAK -->
+    <div class="recipe-card">
+      <div class="recipe-name">Smoke Break</div>
+      <div class="recipe-desc">Peated scotch, coffee, and bitter orange</div>
+
+      <div class="ingredients-label">— Ingredients —</div>
+      <ul class="ingredients">
+        <li>
+          <span class="ing-name">Monkey Shoulder <span class="ing-sub">Blended Malt Scotch</span></span>
+          <span class="ing-amount">2 oz</span>
+        </li>
+        <li>
+          <span class="ing-name">Laphroaig 10 <span class="ing-sub">Islay Single Malt</span></span>
+          <span class="ing-amount">½ oz</span>
+        </li>
+        <li>
+          <span class="ing-name">Coffee Liqueur <span class="ing-sub">Mr. Black or Kahlúa</span></span>
+          <span class="ing-amount">¾ oz</span>
+        </li>
+        <li>
+          <span class="ing-name">Demerara Syrup <span class="ing-sub">2:1 rich</span></span>
+          <span class="ing-amount">¼ oz</span>
+        </li>
+        <li>
+          <span class="ing-name">Orange Bitters <span class="ing-sub">Regan's or Angostura</span></span>
+          <span class="ing-amount">2 dashes</span>
+        </li>
+      </ul>
+
+      <div class="method-label">— Method —</div>
+      <div class="method-text">
+        <strong>Combine</strong> all ingredients in a mixing glass with ice.
+        <strong>Stir</strong> 30–40 seconds until well-chilled.
+        <strong>Strain</strong> over a large cube into a double rocks glass.
+        <strong>Express</strong> orange peel and rest on rim.
+      </div>
+
+      <div class="glassware">
+        <div class="glass-tag">Glass <span>Double Rocks</span></div>
+        <div class="glass-tag">Ice <span>Large Cube</span></div>
+        <div class="glass-tag">Garnish <span>Orange Peel</span></div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE — duplicate this block to add new recipes -->
+    <!--
+    <div class="recipe-card">
+      <div class="recipe-name">Cocktail Name</div>
+      <div class="recipe-desc">Short evocative description</div>
+
+      <div class="ingredients-label">— Ingredients —</div>
+      <ul class="ingredients">
+        <li>
+          <span class="ing-name">Ingredient <span class="ing-sub">Brand or spec</span></span>
+          <span class="ing-amount">X oz</span>
+        </li>
+      </ul>
+
+      <div class="method-label">— Method —</div>
+      <div class="method-text">
+        Method here.
+      </div>
+
+      <div class="glassware">
+        <div class="glass-tag">Glass <span>Type</span></div>
+        <div class="glass-tag">Ice <span>Type</span></div>
+        <div class="glass-tag">Garnish <span>Type</span></div>
+      </div>
+    </div>
+    -->
+
+  </div>
+</div>
+</body>
+</html>
