@@ -16,7 +16,6 @@
     --black:     #080808;
     --off-white: #f0ebe0;
     --gold:      #c8a84b;
-    --muted:     #f0ebe0;
     --faint:     #d0c5b4;
     --rule:      #2a2520;
   }
@@ -25,7 +24,6 @@
 
   html {
     font-size: 16px;
-    /* touch-action prevents horizontal swipe-scroll on iOS regardless of overflow settings */
     touch-action: pan-y pinch-zoom;
     overflow-x: hidden;
   }
@@ -82,6 +80,7 @@
   .cocktail {
     padding: clamp(1.1rem, 3.5vw, 1.6rem) 0;
     border-bottom: 1px solid var(--rule);
+    text-align: center;
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
@@ -100,35 +99,26 @@
   .cocktail:nth-child(10) { animation-delay: 0.95s; }
   .cocktail:nth-child(11) { animation-delay: 1.05s; }
   .cocktail:nth-child(12) { animation-delay: 1.15s; }
+  .cocktail:nth-child(13) { animation-delay: 1.25s; }
+  .cocktail:nth-child(14) { animation-delay: 1.35s; }
 
   .cocktail-name {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(1rem, 3.5vw, 1.4rem);
+    font-size: clamp(0.9rem, 3.2vw, 1.2rem);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     overflow-wrap: break-word;
     word-break: break-word;
   }
 
-  .cocktail-desc {
-    font-size: clamp(1.15rem, 3.5vw, 1.45rem);
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 0.65rem;
-    overflow-wrap: break-word;
-  }
-
-  .cocktail-spirits {
-    font-family: 'Syncopate', sans-serif;
-    font-size: clamp(0.65rem, 2vw, 0.75rem);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .cocktail-ingredients {
+    font-size: clamp(1.05rem, 3vw, 1.25rem);
     color: var(--faint);
-    overflow-wrap: anywhere;
+    line-height: 1.5;
+    overflow-wrap: break-word;
   }
 
   /* ── Tagline ── */
@@ -152,7 +142,6 @@
     .container { padding: 0 1.1rem 3rem; }
     h1 { letter-spacing: 0.04em; }
     .cocktail-name { letter-spacing: 0.05em; }
-    .cocktail-spirits { letter-spacing: 0.05em; }
   }
 </style>
 </head>
@@ -169,93 +158,78 @@
 
       <li class="cocktail">
         <div class="cocktail-name">Negroni</div>
-        <p class="cocktail-desc">Terroir gin, Campari, sweet vermouth. Stirred over a large cube.</p>
-        <div class="cocktail-spirits">St. George Terroir · Campari · Cocchi di Torino</div>
+        <div class="cocktail-ingredients">Gin, Campari, Sweet Vermouth</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">Boulevardier</div>
-        <p class="cocktail-desc">Bourbon, Campari, sweet vermouth. The Negroni's darker cousin, stirred over a large cube.</p>
-        <div class="cocktail-spirits">Bourbon · Campari · Cocchi di Torino</div>
+        <div class="cocktail-ingredients">Bourbon, Campari, Sweet Vermouth</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">Alex's Daiquiri</div>
-        <p class="cocktail-desc">Light rum, fresh lime, simple syrup. Shaken and served up.</p>
-        <div class="cocktail-spirits">Light Rum · Lime · Simple Syrup</div>
+        <div class="cocktail-ingredients">Rum, Lime, Simple Syrup</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">Mai Tai</div>
-        <p class="cocktail-desc">Jamaican rum, orange curaçao, orgeat, fresh lime. Shaken over crushed ice.</p>
-        <div class="cocktail-spirits">Smith &amp; Cross · Orange Curaçao · Orgeat · Lime</div>
+        <div class="cocktail-ingredients">Jamaican Rum, Orange Curaçao, Orgeat, Lime</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">Sidecar</div>
-        <p class="cocktail-desc">Hennessy VSOP, Cointreau, fresh lemon. Shaken and served up.</p>
-        <div class="cocktail-spirits">Hennessy VSOP · Cointreau · Lemon</div>
+        <div class="cocktail-ingredients">Cognac, Cointreau, Lemon</div>
       </li>
 
       <!-- <li class="cocktail">
         <div class="cocktail-name">The Pale Countess</div>
-        <p class="cocktail-desc">Earl Grey gin, Italicus, fresh lemon, egg white. Shaken and served up.</p>
-        <div class="cocktail-spirits">Earl Grey Gin · Italicus · Lemon</div>
+        <div class="cocktail-ingredients">Earl Grey Gin, Italicus, Lemon, Egg White</div>
       </li> -->
 
       <li class="cocktail">
         <div class="cocktail-name">Naked &amp; Famous</div>
-        <p class="cocktail-desc">Mezcal, Aperol, Yellow Chartreuse, fresh lime. Shaken and served up.</p>
-        <div class="cocktail-spirits">Mezcal · Aperol · Yellow Chartreuse · Lime</div>
+        <div class="cocktail-ingredients">Mezcal, Aperol, Yellow Chartreuse, Lime</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">Oaxacanite</div>
-        <p class="cocktail-desc">Mezcal, tequila blanco, fresh lime, honey syrup, bitters. Shaken and served up.</p>
-        <div class="cocktail-spirits">Mezcal · Tequila Blanco · Honey · Lime</div>
+        <div class="cocktail-ingredients">Mezcal, Tequila Blanco, Lime, Honey, Bitters</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">High Desert</div>
-        <p class="cocktail-desc">Tequila, mezcal, Green Chartreuse, velvet falernum. Stirred and served up.</p>
-        <div class="cocktail-spirits">Fortaleza · Mezcal · Green Chartreuse · Falernum</div>
+        <div class="cocktail-ingredients">Tequila, Mezcal, Green Chartreuse, Falernum</div>
       </li>
 
       <!-- <li class="cocktail">
         <div class="cocktail-name">Verona Old Fashioned</div>
-        <p class="cocktail-desc">Cognac, muddled orange and cherry, simple syrup, Angostura. Served over ice.</p>
-        <div class="cocktail-spirits">Cognac VS · Orange · Cherry · Angostura</div>
+        <div class="cocktail-ingredients">Cognac, Orange, Cherry, Angostura</div>
       </li> -->
 
       <li class="cocktail">
         <div class="cocktail-name">Manhattan</div>
-        <p class="cocktail-desc">Heritage Minnesota rye, sweet vermouth, Angostura. Stirred until cold.</p>
-        <div class="cocktail-spirits">Oklon Rye · Sweet Vermouth · Angostura</div>
+        <div class="cocktail-ingredients">Rye, Sweet Vermouth, Angostura</div>
       </li>
 
       <!-- <li class="cocktail">
         <div class="cocktail-name">Vieux Pomme</div>
-        <p class="cocktail-desc">Rye, Calvados, sweet vermouth, Bénédictine, bitters. Stirred over a large cube.</p>
-        <div class="cocktail-spirits">Oklon Rye · Daron Calvados · Cocchi di Torino · Bénédictine</div>
+        <div class="cocktail-ingredients">Rye, Calvados, Sweet Vermouth, Bénédictine, Bitters</div>
       </li> -->
 
       <li class="cocktail">
         <div class="cocktail-name">Smoke Break</div>
-        <p class="cocktail-desc">Blended Scotch, peated malt, coffee liqueur, orange bitters. Stirred over a large cube.</p>
-        <div class="cocktail-spirits">Monkey Shoulder · Laphroaig 10 · State Line</div>
+        <div class="cocktail-ingredients">Blended Scotch, Peated Scotch, Coffee Liqueur, Orange Bitters</div>
       </li>
 
       <li class="cocktail">
         <div class="cocktail-name">St. George and the Dragon</div>
-        <p class="cocktail-desc">Irish whiskey, Punt e Mes, peated Scotch, Bénédictine, absinthe. Stirred and served up with a lemon twist.</p>
-        <div class="cocktail-spirits">Redbreast 12 · Laphroaig 10 · Punt e Mes · Bénédictine</div>
+        <div class="cocktail-ingredients">Irish Whiskey, Punt e Mes, Peated Scotch, Bénédictine, Absinthe</div>
       </li>
 
       <!-- Add more cocktails here:
       <li class="cocktail">
         <div class="cocktail-name">Name</div>
-        <p class="cocktail-desc">Description.</p>
-        <div class="cocktail-spirits">Spirit · Spirit · Modifier</div>
+        <div class="cocktail-ingredients">Ingredient, Ingredient, Modifier</div>
       </li>
       -->
 
